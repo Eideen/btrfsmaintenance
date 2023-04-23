@@ -40,7 +40,7 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
-	for disk in $(sudo btrfs filesystem show /volum1 | awk '/path/ {print $NF}');do
+	for disk in $(sudo btrfs filesystem show $MNT | awk '/path/ {print $NF}');do
 	
   	echo -E "\n### For disk: $disk"
   	run_task btrfs scrub start -Bd $ioprio $readonly "$disk"
