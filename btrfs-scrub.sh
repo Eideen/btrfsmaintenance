@@ -35,12 +35,17 @@ IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 	IFS="$OIFS"
-	echo "Running scrub on $MNT"
+	echo "## Running scrub on $MNT"
 	if ! is_btrfs "$MNT"; then
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
-	run_task btrfs scrub start -Bd $ioprio $readonly "$MNT"
+	for disk in $(sudo btrfs filesystem show /volum1 | awk '/path/ {print $NF}');do
+	
+  	echo -E "\n### For disk: $disk"
+  	run_task btrfs scrub start -Bd $ioprio $readonly "$disk"
+  done
+
 	if [ "$?" != "0" ]; then
 		echo "Scrub cancelled at $MNT"
 		exit 1
